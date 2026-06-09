@@ -5,12 +5,11 @@ conn = get_connection()
 cur = conn.cursor()
 
 cur.execute("""
-SELECT name
-FROM sqlite_master
-WHERE type='table'
+SELECT *
+FROM analysis_results
 """)
 
 for row in cur.fetchall():
-    print(row[0])
+    print(row)
 
 conn.close()
