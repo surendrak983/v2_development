@@ -64,6 +64,33 @@ def initialize_database():
     )
     """)
 
+    # ----------------------------------
+    # Analysis results table
+    # ----------------------------------
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS analysis_results
+    (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        exchange_id TEXT,
+
+        event_type TEXT,
+
+        confidence INTEGER,
+
+        impact_score INTEGER,
+
+        impact_signal TEXT,
+
+        trade_signal TEXT,
+
+        priority INTEGER,
+
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
     conn.commit()
 
     conn.close()
