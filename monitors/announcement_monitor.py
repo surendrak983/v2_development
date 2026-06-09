@@ -2,6 +2,10 @@ from repository.announcement_repository import (
     AnnouncementRepository
 )
 
+from services.analysis_service import (
+    AnalysisService
+)
+
 from core.notifier import info
 
 
@@ -12,6 +16,8 @@ class AnnouncementMonitor:
         self.client = client
 
         self.repo = AnnouncementRepository()
+
+        self.analysis_service = AnalysisService()
 
     def run(self):
 
@@ -37,6 +43,16 @@ class AnnouncementMonitor:
 
             self.repo.save(row)
 
+            analysis = (
+                self.analysis_service
+                .analyze_and_store(
+                    item["exchange_id"],
+                    item["headline"]
+                )
+            )
+
             info(
-                f"Saved {item['company_name']}"
+                f"{item['company_name']} | "
+                f"{analysis['event_type']} | "
+                f"{analysis['trade_signal']}"
             )
