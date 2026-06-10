@@ -15,6 +15,21 @@ def save_analysis(
 
     cur = conn.cursor()
 
+    # Check if record already exists
+    cur.execute("""
+    SELECT 1
+    FROM analysis_results
+    WHERE exchange_id = ?
+    """, (
+        exchange_id,
+    ))
+
+    if cur.fetchone():
+
+        conn.close()
+
+        return False
+
     cur.execute("""
     INSERT INTO analysis_results
     (
@@ -43,3 +58,5 @@ def save_analysis(
     conn.commit()
 
     conn.close()
+
+    return True

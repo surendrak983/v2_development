@@ -2,7 +2,7 @@ from repository.database import get_connection
 
 
 def save_analysis(
-    newsid,
+    exchange_id,
     event_type,
     confidence,
     impact_score,
@@ -15,9 +15,25 @@ def save_analysis(
 
     cur = conn.cursor()
 
+    # Check if already exists
     cur.execute("""
-    INSERT INTO analysis_results(
-        newsid,
+    SELECT 1
+    FROM analysis_results
+    WHERE exchange_id = ?
+    """, (
+        exchange_id,
+    ))
+
+    if cur.fetchone():
+
+        conn.close()
+
+        return False
+
+    cur.execute("""
+    INSERT INTO analysis_results
+    (
+        exchange_id,
         event_type,
         confidence,
         impact_score,
@@ -25,11 +41,12 @@ def save_analysis(
         trade_signal,
         priority
     )
-    VALUES(
-        ?,?,?,?,?,?,?
+    VALUES
+    (
+        ?, ?, ?, ?, ?, ?, ?
     )
     """, (
-        newsid,
+        exchange_id,
         event_type,
         confidence,
         impact_score,
@@ -41,3 +58,5 @@ def save_analysis(
     conn.commit()
 
     conn.close()
+
+    return True
