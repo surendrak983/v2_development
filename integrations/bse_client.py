@@ -25,24 +25,28 @@ class BSEClient:
                 for item in items:
 
                     analysis_text = " ".join([
+
                         str(
                             item.get(
                                 "HEADLINE",
                                 ""
                             )
                         ),
+
                         str(
                             item.get(
                                 "NEWSSUB",
                                 ""
                             )
                         ),
+
                         str(
                             item.get(
                                 "SUBCATNAME",
                                 ""
                             )
                         ),
+
                         str(
                             item.get(
                                 "CATEGORYNAME",
@@ -87,6 +91,14 @@ class BSEClient:
 
                         "analysis_text":
                             analysis_text,
+
+                        "attachment_name":
+                            str(
+                                item.get(
+                                    "ATTACHMENTNAME",
+                                    ""
+                                )
+                            ),
 
                         "announcement_time":
                             str(

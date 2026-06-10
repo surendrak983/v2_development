@@ -13,16 +13,17 @@ sys.path.insert(
     str(PROJECT_ROOT)
 )
 
-from services.pdf_text_extractor import (
-    PDFTextExtractor
+from services.attachment_processor import (
+    AttachmentProcessor
 )
 
-extractor = (
-    PDFTextExtractor()
+processor = (
+    AttachmentProcessor()
 )
 
-text = extractor.extract_text(
+result = processor.process(
+    "540879",
     "test.pdf"
 )
 
-print(text[:5000])
+print(result)
