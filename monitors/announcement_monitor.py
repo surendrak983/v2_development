@@ -21,7 +21,9 @@ class AnnouncementMonitor:
 
     def run(self):
 
-        announcements = self.client.get_announcements()
+        announcements = (
+            self.client.get_announcements()
+        )
 
         info(
             f"Fetched {len(announcements)} announcements"
@@ -30,13 +32,28 @@ class AnnouncementMonitor:
         for item in announcements:
 
             row = {
-                "exchange_id": item["exchange_id"],
-                "scrip_code": item["scrip_code"],
-                "company_name": item["company_name"],
-                "headline": item["headline"],
-                "category": "UNKNOWN",
-                "sub_category": "UNKNOWN",
-                "impact_score": 0,
+
+                "exchange_id":
+                    item["exchange_id"],
+
+                "scrip_code":
+                    item["scrip_code"],
+
+                "company_name":
+                    item["company_name"],
+
+                "headline":
+                    item["headline"],
+
+                "category":
+                    "UNKNOWN",
+
+                "sub_category":
+                    "UNKNOWN",
+
+                "impact_score":
+                    0,
+
                 "announcement_time":
                     item["announcement_time"]
             }
@@ -47,7 +64,10 @@ class AnnouncementMonitor:
                 self.analysis_service
                 .analyze_and_store(
                     item["exchange_id"],
-                    item["headline"]
+                    item.get(
+                        "analysis_text",
+                        item["headline"]
+                    )
                 )
             )
 

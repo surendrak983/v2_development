@@ -24,6 +24,33 @@ class BSEClient:
 
                 for item in items:
 
+                    analysis_text = " ".join([
+                        str(
+                            item.get(
+                                "HEADLINE",
+                                ""
+                            )
+                        ),
+                        str(
+                            item.get(
+                                "NEWSSUB",
+                                ""
+                            )
+                        ),
+                        str(
+                            item.get(
+                                "SUBCATNAME",
+                                ""
+                            )
+                        ),
+                        str(
+                            item.get(
+                                "CATEGORYNAME",
+                                ""
+                            )
+                        )
+                    ])
+
                     announcements.append({
 
                         "exchange_id":
@@ -57,6 +84,9 @@ class BSEClient:
                                     ""
                                 )
                             ),
+
+                        "analysis_text":
+                            analysis_text,
 
                         "announcement_time":
                             str(

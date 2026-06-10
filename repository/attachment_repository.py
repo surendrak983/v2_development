@@ -60,3 +60,31 @@ class AttachmentRepository:
         conn.close()
 
         return rows
+
+    def get_text_by_id(
+        self,
+        attachment_id
+    ):
+
+        conn = get_connection()
+
+        cur = conn.cursor()
+
+        cur.execute("""
+        SELECT
+            raw_text
+        FROM attachment_texts
+        WHERE id = ?
+        """, (
+            attachment_id,
+        ))
+
+        row = cur.fetchone()
+
+        conn.close()
+
+        if not row:
+
+            return None
+
+        return row[0]

@@ -4,7 +4,6 @@ from repository.attachment_repository import (
 
 repo = AttachmentRepository()
 
-rows = repo.get_latest()
+for row in repo.get_latest(20):
 
-for row in rows:
     print(row)

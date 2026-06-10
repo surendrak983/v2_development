@@ -6,15 +6,36 @@ class EventDetector:
 
         rules = [
 
-            ("dividend", [
-                "dividend",
-                "interim dividend",
-                "final dividend"
-            ]),
+            # Highest priority events
 
             ("buyback", [
                 "buyback",
                 "buy-back"
+            ]),
+
+            ("open_offer", [
+                "open offer"
+            ]),
+
+            ("acquisition", [
+                "acquisition",
+                "acquire",
+                "acquired stake",
+                "strategic acquisition"
+            ]),
+
+            ("merger", [
+                "merger",
+                "amalgamation",
+                "scheme of arrangement"
+            ]),
+
+            # Corporate actions
+
+            ("dividend", [
+                "dividend",
+                "interim dividend",
+                "final dividend"
             ]),
 
             ("bonus", [
@@ -28,16 +49,27 @@ class EventDetector:
                 "sub-division"
             ]),
 
-            ("board_meeting", [
-                "board meeting"
+            ("rights_issue", [
+                "rights issue",
+                "rights entitlement"
             ]),
 
-            ("results", [
-                "financial results",
-                "quarterly results",
-                "audited results",
-                "unaudited results"
+            ("preferential_issue", [
+                "preferential issue",
+                "preferential allotment"
             ]),
+
+            # Fund raising
+
+            ("fund_raise", [
+                "fund raising",
+                "raise funds",
+                "raising funds",
+                "qip",
+                "qualified institutions placement"
+            ]),
+
+            # Business developments
 
             ("order_win", [
                 "order received",
@@ -50,10 +82,71 @@ class EventDetector:
                 "purchase order"
             ]),
 
+            # Financial results
+
+            ("results", [
+                "financial results",
+                "quarterly results",
+                "audited results",
+                "unaudited results"
+            ]),
+
+            # Promoter activity
+
             ("promoter_purchase", [
                 "regulation 29(2)",
+                "regulation 7(2)",
                 "acquisition of shares",
-                "promoter acquired"
+                "promoter acquired",
+                "insider trading regulations",
+                "sebi (pit)",
+                "pit regulations"
+            ]),
+
+            # Meetings
+
+            ("board_meeting", [
+                "board meeting"
+            ]),
+
+            ("agm", [
+                "annual general meeting",
+                "agm"
+            ]),
+
+            ("egm", [
+                "extraordinary general meeting",
+                "egm"
+            ]),
+
+            ("investor_meeting", [
+                "analyst meet",
+                "investor meet",
+                "investor meeting",
+                "analyst / investor meet",
+                "investor presentation"
+            ]),
+
+            # Reports
+
+            ("annual_report", [
+                "annual report"
+            ]),
+
+            ("postal_ballot", [
+                "postal ballot",
+                "scrutinizer report"
+            ]),
+
+            ("credit_rating", [
+                "credit rating",
+                "rating upgrade",
+                "rating downgrade"
+            ]),
+
+            ("press_release", [
+                "press release",
+                "media release"
             ])
         ]
 
