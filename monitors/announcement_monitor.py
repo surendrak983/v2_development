@@ -17,7 +17,9 @@ class AnnouncementMonitor:
 
         self.repo = AnnouncementRepository()
 
-        self.analysis_service = AnalysisService()
+        self.analysis_service = (
+            AnalysisService()
+        )
 
     def run(self):
 
@@ -58,13 +60,17 @@ class AnnouncementMonitor:
                     item["announcement_time"]
             }
 
-            self.repo.save(row)
+            self.repo.save(
+                row
+            )
 
             analysis = (
                 self.analysis_service
                 .analyze_and_store(
-                    item["exchange_id"],
-                    item.get(
+                    exchange_id=item["exchange_id"],
+                    scrip_code=item["scrip_code"],
+                    announcement_time=item["announcement_time"],
+                    headline=item.get(
                         "analysis_text",
                         item["headline"]
                     )

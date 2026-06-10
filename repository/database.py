@@ -91,6 +91,47 @@ def initialize_database():
     )
     """)
 
+    # ----------------------------------
+    # Signal performance table
+    # ----------------------------------
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS signal_performance
+    (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        exchange_id TEXT,
+
+        scrip_code TEXT,
+
+        event_type TEXT,
+
+        trade_signal TEXT,
+
+        signal_date TEXT,
+
+        price_d0 REAL,
+
+        price_d1 REAL,
+
+        price_d3 REAL,
+
+        price_d5 REAL,
+
+        price_d10 REAL,
+
+        return_d1 REAL,
+
+        return_d3 REAL,
+
+        return_d5 REAL,
+
+        return_d10 REAL,
+
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
     conn.commit()
 
     conn.close()

@@ -21,6 +21,12 @@ LOG_DIR.mkdir(exist_ok=True)
 
 DB_PATH = DATA_DIR / "bse_monitor.db"
 
+MARKET_DATA_DB_PATH = (
+    Path(
+        r"C:\Users\poona\bse_cash_project\Data\market_data.db"
+    )
+)
+
 SEEN_FILE = DATA_DIR / "seen.json"
 
 # ----------------------------

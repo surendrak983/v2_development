@@ -1,3 +1,6 @@
+import time
+from datetime import datetime
+
 from repository.database import (
     initialize_database
 )
@@ -8,6 +11,10 @@ from integrations.bse_client import (
 
 from monitors.announcement_monitor import (
     AnnouncementMonitor
+)
+
+from core.config import (
+    POLL_INTERVAL_SECONDS
 )
 
 
@@ -21,10 +28,46 @@ def startup():
         client
     )
 
-    monitor.run()
-
+    print("=" * 60)
     print("BSE V2 Started")
+    print(
+        f"Polling every "
+        f"{POLL_INTERVAL_SECONDS} seconds"
+    )
+    print("=" * 60)
+
+    while True:
+
+        try:
+
+            print()
+            print(
+                f"[{datetime.now()}] "
+                f"Checking announcements..."
+            )
+
+            monitor.run()
+
+        except Exception as e:
+
+            print(
+                f"ERROR: {e}"
+            )
+
+        time.sleep(
+            POLL_INTERVAL_SECONDS
+        )
 
 
 if __name__ == "__main__":
-    startup()
+
+    try:
+
+        startup()
+
+    except KeyboardInterrupt:
+
+        print()
+        print(
+            "BSE V2 stopped by user"
+        )

@@ -7,13 +7,19 @@ conn = get_connection()
 cur = conn.cursor()
 
 cur.execute("""
-SELECT name
-FROM sqlite_master
-WHERE type='table'
+SELECT
+    id,
+    exchange_id,
+    scrip_code,
+    event_type,
+    trade_signal
+FROM signal_performance
+ORDER BY id DESC
+LIMIT 20
 """)
 
 for row in cur.fetchall():
 
-    print(row[0])
+    print(row)
 
 conn.close()
