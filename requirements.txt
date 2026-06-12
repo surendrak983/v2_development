@@ -1,0 +1,9 @@
+bse
+openpyxl
+pandas
+pdf2image
+pdfplumber
+PyMuPDF
+pytesseract
+requests
+streamlit

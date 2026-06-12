@@ -1,22 +1,23 @@
 from repository.announcement_repository import (
-AnnouncementRepository
+    AnnouncementRepository
 )
 
 from services.analysis_service import (
-AnalysisService
+    AnalysisService
 )
 
 from services.attachment_download_service import (
-AttachmentDownloadService
+    AttachmentDownloadService
 )
 
 from services.attachment_processor import (
-AttachmentProcessor
+    AttachmentProcessor
 )
 
 from core.notifier import (
-info
+    info
 )
+
 
 class AnnouncementMonitor:
 
@@ -24,124 +25,91 @@ class AnnouncementMonitor:
 
         self.client = client
 
-        self.repo = (
-        AnnouncementRepository()
-    )
+        self.repo = AnnouncementRepository()
 
-        self.analysis_service = (
-        AnalysisService()
-    )
+        self.analysis_service = AnalysisService()
 
-        self.download_service = (
-        AttachmentDownloadService()
-    )
+        self.download_service = AttachmentDownloadService()
 
-        self.attachment_processor = (
-        AttachmentProcessor()
-    )
+        self.attachment_processor = AttachmentProcessor()
 
     def run(self):
 
-        announcements = (
-        self.client.get_announcements()
-    )
+        announcements = self.client.get_announcements()
 
         info(
             f"Fetched {len(announcements)} announcements"
-    )
+        )
 
         for item in announcements:
 
             row = {
+                "exchange_id": item["exchange_id"],
+                "scrip_code": item["scrip_code"],
+                "company_name": item["company_name"],
+                "headline": item["headline"],
+                "category": "UNKNOWN",
+                "sub_category": "UNKNOWN",
+                "impact_score": 0,
+                "announcement_time": item["announcement_time"],
+            }
 
-            "exchange_id":
-                item["exchange_id"],
+            is_new = self.repo.save(row)
 
-            "scrip_code":
-                item["scrip_code"],
+            if not is_new:
+                continue
 
-            "company_name":
-                item["company_name"],
+            pdf_text = None
 
-            "headline":
-                item["headline"],
-
-            "category":
-                "UNKNOWN",
-
-            "sub_category":
-                "UNKNOWN",
-
-            "impact_score":
-                0,
-
-            "announcement_time":
-                item["announcement_time"]
-        }
-
-        self.repo.save(
-            row
-        )
-
-        pdf_text = None
-
-        attachment_name = (
-            item.get(
+            attachment_name = item.get(
                 "attachment_name",
                 ""
             )
-        )
 
-        if attachment_name:
+            if attachment_name:
 
-            try:
+                try:
 
-                pdf_path = (
-                    self.download_service
-                    .download_pdf(
-                        item["scrip_code"],
-                        attachment_name
-                    )
-                )
-
-                if pdf_path:
-
-                    result = (
-                        self.attachment_processor
-                        .process(
+                    pdf_path = (
+                        self.download_service
+                        .download_pdf(
                             item["scrip_code"],
-                            pdf_path
+                            attachment_name
                         )
                     )
 
-                    pdf_text = (
-                        result["text"]
+                    if pdf_path:
+
+                        result = (
+                            self.attachment_processor
+                            .process(
+                                item["scrip_code"],
+                                pdf_path
+                            )
+                        )
+
+                        pdf_text = result["text"]
+
+                except Exception as e:
+
+                    print(
+                        f"PDF Error: {e}"
                     )
 
-            except Exception as e:
-
-                print(
-                    f"PDF Error: {e}"
+            analysis = (
+                self.analysis_service
+                .analyze_and_store(
+                    exchange_id=item["exchange_id"],
+                    headline=item.get(
+                        "analysis_text",
+                        item["headline"]
+                    ),
+                    pdf_text=pdf_text
                 )
-
-        analysis = (
-            self.analysis_service
-            .analyze_and_store(
-                exchange_id=item[
-                    "exchange_id"
-                ],
-                headline=item.get(
-                    "analysis_text",
-                    item[
-                        "headline"
-                    ]
-                ),
-                pdf_text=pdf_text
             )
-        )
 
-        info(
-            f"{item['company_name']} | "
-            f"{analysis['event_type']} | "
-            f"{analysis['trade_signal']}"
-        )
+            info(
+                f"{item['company_name']} | "
+                f"{analysis['event_type']} | "
+                f"{analysis['trade_signal']}"
+            )

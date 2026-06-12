@@ -37,5 +37,9 @@ class AnnouncementRepository:
             row["announcement_time"]
         ))
 
+        saved = cur.rowcount == 1
+
         conn.commit()
         conn.close()
+
+        return saved
