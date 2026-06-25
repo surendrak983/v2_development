@@ -1,6 +1,5 @@
-from analysis.analysis_engine import (
-    AnalysisEngine
-)
+
+from analysis.analysis_engine import AnalysisEngine
 
 from repository.analysis_repository import (
     save_analysis
@@ -11,9 +10,7 @@ class AnalysisService:
 
     def __init__(self):
 
-        self.engine = (
-            AnalysisEngine()
-        )
+        self.engine = AnalysisEngine()
 
     def analyze_announcement(
         self,
@@ -21,11 +18,9 @@ class AnalysisService:
         pdf_text=None
     ):
 
-        return (
-            self.engine.analyze(
-                headline,
-                pdf_text
-            )
+        return self.engine.analyze(
+            headline,
+            pdf_text
         )
 
     def analyze_and_store(
@@ -35,33 +30,22 @@ class AnalysisService:
         pdf_text=None
     ):
 
-        result = (
-            self.engine.analyze(
-                headline,
-                pdf_text
-            )
+        result = self.engine.analyze(
+            headline,
+            pdf_text
         )
 
         save_analysis(
             exchange_id=exchange_id,
-            event_type=result[
-                "event_type"
-            ],
-            confidence=result[
-                "confidence"
-            ],
-            impact_score=result[
-                "impact_score"
-            ],
-            impact_signal=result[
-                "impact_signal"
-            ],
-            trade_signal=result[
-                "trade_signal"
-            ],
-            priority=result[
-                "priority"
-            ]
+            event_type=result["event_type"],
+            confidence=result["confidence"],
+            impact_score=result["impact_score"],
+            impact_signal=result["impact_signal"],
+            trade_signal=result["trade_signal"],
+            priority=result["priority"],
+            alpha_score=result["alpha_score"],
+            alpha_signal=result["alpha_signal"]
         )
 
         return result
+

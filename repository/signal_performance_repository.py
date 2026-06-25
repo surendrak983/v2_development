@@ -13,11 +13,10 @@ class SignalPerformanceRepository:
     ):
 
         conn = get_connection()
-
         cur = conn.cursor()
 
         cur.execute("""
-        INSERT INTO signal_performance
+        INSERT OR IGNORE INTO signal_performance
         (
             exchange_id,
             scrip_code,
@@ -29,7 +28,8 @@ class SignalPerformanceRepository:
         (
             ?, ?, ?, ?, ?
         )
-        """, (
+        """,
+        (
             exchange_id,
             scrip_code,
             event_type,
@@ -38,13 +38,12 @@ class SignalPerformanceRepository:
         ))
 
         conn.commit()
-
         conn.close()
+
 
     def get_all_signals(self):
 
         conn = get_connection()
-
         cur = conn.cursor()
 
         cur.execute("""

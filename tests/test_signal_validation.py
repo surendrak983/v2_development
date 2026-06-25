@@ -14,12 +14,12 @@ sys.path.insert(
     str(PROJECT_ROOT)
 )
 
-from services.performance_tracker import (
-    PerformanceTracker
+from services.signal_validation_service import (
+    SignalValidationService
 )
 
-tracker = (
-    PerformanceTracker()
+service = (
+    SignalValidationService()
 )
 
-tracker.update_all()
+service.update_future_prices()

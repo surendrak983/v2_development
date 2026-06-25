@@ -1,94 +1,217 @@
+
+from analysis.adaptive_scoring_engine import (
+    AdaptiveScoringEngine
+)
+
+
 class ImpactEngine:
 
-    def score(self, detection):
+    def __init__(self):
 
-        event_type = detection["event_type"]
-
-        scores = {
-
-            # Very High Impact
-
-            "buyback": 95,
-
-            "open_offer": 90,
-
-            "order_win": 85,
-
-            "acquisition": 85,
-
-            "merger": 85,
-
-            "promoter_purchase": 80,
-
-            # High Impact
-
-            "bonus": 75,
-
-            "dividend": 70,
-
-            "stock_split": 65,
-
-            "results": 60,
-
-            "fund_raise": 60,
-
-            # Medium Impact
-
-            "rights_issue": 55,
-
-            "preferential_issue": 55,
-
-            "credit_rating": 55,
-
-            # Low Impact
-
-            "board_meeting": 40,
-
-            "investor_meeting": 25,
-
-            # Informational
-
-            "annual_report": 15,
-
-            "postal_ballot": 15,
-
-            "press_release": 10,
-
-            "agm": 10,
-
-            "egm": 10,
-
-            # Default
-
-            "unknown": 0
-        }
-
-        score = scores.get(
-            event_type,
-            0
+        self.adaptive_engine = (
+            AdaptiveScoringEngine()
         )
 
-        if score >= 80:
+    def score(
+        self,
+        analysis
+    ):
 
-            signal = "HIGH"
+        event_type = (
+            analysis.get(
+                "event_type",
+                "unknown"
+            )
+        )
 
-        elif score >= 60:
+        score = 50
 
-            signal = "MEDIUM"
+        # -------------------------
+        # Acquisition
+        # -------------------------
 
-        elif score > 0:
+        if event_type == "acquisition":
 
-            signal = "LOW"
+            score = 85
+
+            stake = analysis.get(
+                "stake_percent"
+            )
+
+            if stake:
+
+                if stake >= 50:
+
+                    score += 10
+
+                elif stake >= 25:
+
+                    score += 5
+
+        # -------------------------
+        # Order Win
+        # -------------------------
+
+        elif event_type == "order_win":
+
+            score = 80
+
+            amount = analysis.get(
+                "amount_crore"
+            )
+
+            if amount:
+
+                if amount >= 1000:
+
+                    score += 15
+
+                elif amount >= 500:
+
+                    score += 10
+
+                elif amount >= 100:
+
+                    score += 5
+
+        # -------------------------
+        # Dividend
+        # -------------------------
+
+        elif event_type == "dividend":
+
+            score = 80
+
+            dividend = analysis.get(
+                "dividend"
+            )
+
+            if dividend:
+
+                if dividend >= 10:
+
+                    score += 10
+
+                elif dividend >= 5:
+
+                    score += 5
+
+        # -------------------------
+        # Credit Rating
+        # -------------------------
+
+        elif event_type == "credit_rating":
+
+            score = 80
+
+            rating = analysis.get(
+                "rating"
+            )
+
+            if rating == "AAA":
+
+                score += 10
+
+            elif rating == "AA+":
+
+                score += 5
+
+        # -------------------------
+        # Results
+        # -------------------------
+
+        elif event_type == "results":
+
+            score = 75
+
+        # -------------------------
+        # Buyback
+        # -------------------------
+
+        elif event_type == "buyback":
+
+            score = 95
+
+        # -------------------------
+        # Management Change
+        # -------------------------
+
+        elif event_type == "management_change":
+
+            score = 60
+
+        # -------------------------
+        # Board Meeting
+        # -------------------------
+
+        elif event_type == "board_meeting":
+
+            score = 55
+
+        # -------------------------
+        # Investor Meeting
+        # -------------------------
+
+        elif event_type == "investor_meeting":
+
+            score = 50
+
+        # -------------------------
+        # Unknown
+        # -------------------------
 
         else:
 
-            signal = "IGNORE"
+            score = 50
+
+        # -------------------------
+        # Adaptive Scoring
+        # -------------------------
+
+        adjustment = (
+            self.adaptive_engine
+            .get_adjustment(
+                event_type
+            )
+        )
+
+        score += adjustment
+
+        # Keep score in range
+
+        score = max(
+            0,
+            min(
+                score,
+                100
+            )
+        )
+
+        # -------------------------
+        # Impact Signal
+        # -------------------------
+
+        if score >= 90:
+
+            impact_signal = "VERY_HIGH"
+
+        elif score >= 80:
+
+            impact_signal = "HIGH"
+
+        elif score >= 65:
+
+            impact_signal = "MEDIUM"
+
+        else:
+
+            impact_signal = "LOW"
 
         return {
 
-            "event_type": event_type,
+            "score":
+                score,
 
-            "score": score,
-
-            "signal": signal
+            "signal":
+                impact_signal
         }

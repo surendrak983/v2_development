@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.table-sm td,
+.table-sm th {
+
+    font-size: 13px;
+
+    vertical-align: middle;
+
+}
+
+.time-col {
+
+    white-space: nowrap;
+    width: 160px;
+
+}
+
+.company-col {
+
+    min-width: 220px;
+
+}
+
+.headline-col {
+
+    max-width: 550px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+.signal-buy {
+
+    background-color: #198754;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+
+}
+
+</style>
+
+<h1>
+
+🔥 Strong Buy Screener
+
+</h1>
+
+<hr>
+
+<div class="table-responsive">
+
+<table class="table table-sm table-striped table-hover table-bordered">
+
+    <thead class="table-light">
+
+        <tr>
+
+            <th>Time</th>
+
+            <th>Company</th>
+
+            <th>Scrip</th>
+
+            <th>Headline</th>
+
+            <th>Event</th>
+
+            <th>Impact</th>
+
+            <th>Alpha</th>
+
+            <th>Signal</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for row in rows %}
+
+        <tr>
+
+            <td class="time-col">
+
+                {{ row[0] }}
+
+            </td>
+
+            <td class="company-col">
+
+                {{ row[1] }}
+
+            </td>
+
+            <td>
+
+                {{ row[2] }}
+
+            </td>
+
+            <td
+                class="headline-col"
+                title="{{ row[3] }}"
+            >
+
+                {{ row[3] }}
+
+            </td>
+
+            <td>
+
+                {{ row[4] }}
+
+            </td>
+
+            <td>
+
+                {{ row[5] }}
+
+            </td>
+
+            <td>
+
+                {{ row[6] }}
+
+            </td>
+
+            <td>
+
+                <span class="signal-buy">
+
+                    {{ row[7] }}
+
+                </span>
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

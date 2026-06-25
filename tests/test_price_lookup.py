@@ -16,7 +16,7 @@ repo = PriceRepository()
 
 price = repo.get_close_price(
     "500020",
-    "2026-06-01"
+    "2026-06-10"
 )
 
 print(price)

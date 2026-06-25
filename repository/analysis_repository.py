@@ -1,3 +1,4 @@
+
 from repository.database import get_connection
 
 
@@ -8,21 +9,25 @@ def save_analysis(
     impact_score,
     impact_signal,
     trade_signal,
-    priority
+    priority,
+    alpha_score,
+    alpha_signal
 ):
 
     conn = get_connection()
 
     cur = conn.cursor()
 
-    # Check if record already exists
-    cur.execute("""
-    SELECT 1
-    FROM analysis_results
-    WHERE exchange_id = ?
-    """, (
-        exchange_id,
-    ))
+    cur.execute(
+        """
+        SELECT 1
+        FROM analysis_results
+        WHERE exchange_id = ?
+        """,
+        (
+            exchange_id,
+        )
+    )
 
     if cur.fetchone():
 
@@ -30,33 +35,41 @@ def save_analysis(
 
         return False
 
-    cur.execute("""
-    INSERT INTO analysis_results
-    (
-        exchange_id,
-        event_type,
-        confidence,
-        impact_score,
-        impact_signal,
-        trade_signal,
-        priority
+    cur.execute(
+        """
+        INSERT INTO analysis_results
+        (
+            exchange_id,
+            event_type,
+            confidence,
+            impact_score,
+            impact_signal,
+            trade_signal,
+            priority,
+            alpha_score,
+            alpha_signal
+        )
+        VALUES
+        (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )
+        """,
+        (
+            exchange_id,
+            event_type,
+            confidence,
+            impact_score,
+            impact_signal,
+            trade_signal,
+            priority,
+            alpha_score,
+            alpha_signal
+        )
     )
-    VALUES
-    (
-        ?, ?, ?, ?, ?, ?, ?
-    )
-    """, (
-        exchange_id,
-        event_type,
-        confidence,
-        impact_score,
-        impact_signal,
-        trade_signal,
-        priority
-    ))
 
     conn.commit()
 
     conn.close()
 
     return True
+

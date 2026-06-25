@@ -1,167 +1,187 @@
 class EventDetector:
 
-    def detect(self, text):
+    def detect(
+        self,
+        text
+    ):
+
+        if not text:
+
+            return {
+                "event_type": "unknown",
+                "confidence": 0
+            }
 
         text = text.lower()
 
-        rules = [
+        # Acquisition
 
-            # Highest priority events
+        if (
+            "acquisition" in text
+            or "acquire" in text
+            or "stake acquisition" in text
+        ):
 
-            ("buyback", [
-                "buyback",
-                "buy-back"
-            ]),
+            return {
+                "event_type": "acquisition",
+                "confidence": 95
+            }
 
-            ("open_offer", [
-                "open offer"
-            ]),
+        # Order Win
 
-            ("acquisition", [
-                "acquisition",
-                "acquire",
-                "acquired stake",
-                "strategic acquisition"
-            ]),
+        elif (
+            "order worth" in text
+            or "received order" in text
+            or "award of order" in text
+            or "receipt of order" in text
+        ):
 
-            ("merger", [
-                "merger",
-                "amalgamation",
-                "scheme of arrangement"
-            ]),
+            return {
+                "event_type": "order_win",
+                "confidence": 95
+            }
 
-            # Corporate actions
+        # Credit Rating
 
-            ("dividend", [
-                "dividend",
-                "interim dividend",
-                "final dividend"
-            ]),
+        elif (
+            "credit rating" in text
+            or "care ratings" in text
+            or "icra" in text
+            or "crisil" in text
+        ):
 
-            ("bonus", [
-                "bonus issue",
-                "issue of bonus shares"
-            ]),
+            return {
+                "event_type": "credit_rating",
+                "confidence": 95
+            }
 
-            ("stock_split", [
-                "stock split",
-                "split of equity shares",
-                "sub-division"
-            ]),
+        # Dividend
 
-            ("rights_issue", [
-                "rights issue",
-                "rights entitlement"
-            ]),
+        elif "dividend" in text:
 
-            ("preferential_issue", [
-                "preferential issue",
-                "preferential allotment"
-            ]),
+            return {
+                "event_type": "dividend",
+                "confidence": 90
+            }
 
-            # Fund raising
+        # Results
 
-            ("fund_raise", [
-                "fund raising",
-                "raise funds",
-                "raising funds",
-                "qip",
-                "qualified institutions placement"
-            ]),
+        elif (
+            "results" in text
+            or "quarter ended" in text
+            or "financial results" in text
+        ):
 
-            # Business developments
+            return {
+                "event_type": "results",
+                "confidence": 90
+            }
 
-            ("order_win", [
-                "order received",
-                "received order",
-                "work order",
-                "letter of award",
-                "contract awarded",
-                "order worth",
-                "contract worth",
-                "purchase order"
-            ]),
+        # Board Meeting
 
-            # Financial results
+        elif "board meeting" in text:
 
-            ("results", [
-                "financial results",
-                "quarterly results",
-                "audited results",
-                "unaudited results"
-            ]),
+            return {
+                "event_type": "board_meeting",
+                "confidence": 90
+            }
 
-            # Promoter activity
+        # Investor Meeting
 
-            ("promoter_purchase", [
-                "regulation 29(2)",
-                "regulation 7(2)",
-                "acquisition of shares",
-                "promoter acquired",
-                "insider trading regulations",
-                "sebi (pit)",
-                "pit regulations"
-            ]),
+        elif (
+            "investor meet" in text
+            or "analyst" in text
+            or "conference call" in text
+        ):
 
-            # Meetings
+            return {
+                "event_type": "investor_meeting",
+                "confidence": 90
+            }
 
-            ("board_meeting", [
-                "board meeting"
-            ]),
+        # Management Change
 
-            ("agm", [
-                "annual general meeting",
-                "agm"
-            ]),
+        elif "resignation" in text:
 
-            ("egm", [
-                "extraordinary general meeting",
-                "egm"
-            ]),
+            return {
+                "event_type": "management_change",
+                "confidence": 90
+            }
 
-            ("investor_meeting", [
-                "analyst meet",
-                "investor meet",
-                "investor meeting",
-                "analyst / investor meet",
-                "investor presentation"
-            ]),
+        # Preferential Issue
 
-            # Reports
+        elif "preferential issue" in text:
 
-            ("annual_report", [
-                "annual report"
-            ]),
+            return {
+                "event_type": "preferential_issue",
+                "confidence": 95
+            }
 
-            ("postal_ballot", [
-                "postal ballot",
-                "scrutinizer report"
-            ]),
+        # ESOP
 
-            ("credit_rating", [
-                "credit rating",
-                "rating upgrade",
-                "rating downgrade"
-            ]),
+        elif (
+            "esop" in text
+            or "esps" in text
+            or "grant of options" in text
+        ):
 
-            ("press_release", [
-                "press release",
-                "media release"
-            ])
-        ]
+            return {
+                "event_type": "esop",
+                "confidence": 90
+            }
 
-        for event_type, keywords in rules:
+        # Stake Sale
 
-            for keyword in keywords:
+        elif (
+            "sale of" in text
+            and "equity stake" in text
+        ):
 
-                if keyword in text:
+            return {
+                "event_type": "stake_sale",
+                "confidence": 95
+            }
 
-                    return {
-                        "event_type": event_type,
-                        "confidence": 90
-                    }
+        # Credit Facility
+
+        elif "credit facility" in text:
+
+            return {
+                "event_type": "fund_raise",
+                "confidence": 90
+            }
+
+        # Restructuring
+
+        elif "restructuring" in text:
+
+            return {
+                "event_type": "restructuring",
+                "confidence": 90
+            }
+
+        # Allotment
+
+        elif "allotment" in text:
+
+            return {
+                "event_type": "allotment",
+                "confidence": 90
+            }
+
+        # Agreement
+
+        elif (
+            "agreement signed" in text
+            or "definitive agreement" in text
+        ):
+
+            return {
+                "event_type": "strategic_agreement",
+                "confidence": 95
+            }
 
         return {
             "event_type": "unknown",
-            "confidence": 0
+            "confidence": 50
         }

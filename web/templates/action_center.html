@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+
+🎯 Action Center
+
+</h1>
+
+<hr>
+
+<div class="row">
+
+{% for card in cards %}
+
+<div class="col-md-6">
+
+<div class="card shadow mb-4">
+
+<div class="card-body">
+
+<h3>
+
+{{ card.company }}
+
+</h3>
+
+<hr>
+
+<p>
+
+<b>Scrip :</b>
+
+{{ card.scrip }}
+
+</p>
+
+<p>
+
+<b>Sector :</b>
+
+{{ card.sector }}
+
+</p>
+
+<p>
+
+<b>Industry :</b>
+
+{{ card.industry }}
+
+</p>
+
+<p>
+
+<b>Market Cap :</b>
+
+{{ card.market_cap }}
+
+</p>
+
+<hr>
+
+<p>
+
+<b>Event :</b>
+
+{{ card.event }}
+
+</p>
+
+<p>
+
+<b>Impact :</b>
+
+{{ card.impact }}
+
+</p>
+
+<p>
+
+<b>Alpha :</b>
+
+{{ card.alpha }}
+
+</p>
+
+<p>
+
+<b>Signal :</b>
+
+<span class="badge bg-success">
+
+{{ card.signal }}
+
+</span>
+
+</p>
+
+<p>
+
+<b>Headline :</b>
+
+<br>
+
+{{ card.headline }}
+
+</p>
+
+<hr>
+
+<div class="d-flex gap-2 flex-wrap">
+
+{% if card.symbol %}
+
+<a
+class="btn btn-primary"
+target="_blank"
+href="https://in.tradingview.com/chart/?symbol=NSE:{{ card.symbol }}"
+>
+
+📈 TradingView
+
+</a>
+
+<a
+class="btn btn-success"
+target="_blank"
+href="https://www.screener.in/company/{{ card.symbol }}/"
+>
+
+📊 Screener
+
+</a>
+
+{% endif %}
+
+
+{% if card.pdf %}
+
+<a
+class="btn btn-secondary"
+target="_blank"
+href="/open_pdf/{{ card.pdf.replace('\\','/') }}"
+>
+
+📄 PDF
+
+</a>
+
+{% endif %}
+
+
+<a
+class="btn btn-danger"
+target="_blank"
+href="https://www.moneycontrol.com"
+>
+
+💰 Moneycontrol
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

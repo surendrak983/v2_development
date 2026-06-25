@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+
+Dashboard
+
+</h1>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-3">
+
+<div class="card text-bg-primary">
+
+<div class="card-body">
+
+<h5>Total Announcements</h5>
+
+<h2>{{ summary.total_announcements }}</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card text-bg-success">
+
+<div class="card-body">
+
+<h5>Average Alpha</h5>
+
+<h2>{{ summary.average_alpha }}</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card text-bg-danger">
+
+<div class="card-body">
+
+<h5>Strong Buy</h5>
+
+<h2>{{ summary.strong_buy_count }}</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card text-bg-warning">
+
+<div class="card-body">
+
+<h5>Buy</h5>
+
+<h2>{{ summary.buy_count }}</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

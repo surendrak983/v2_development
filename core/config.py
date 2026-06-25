@@ -26,7 +26,7 @@ DB_PATH = DATA_DIR / "bse_monitor.db"
 
 MARKET_DATA_DB_PATH = (
     Path(
-        r"C:\Users\poona\bse_cash_project\Data\market_data.db"
+         r"C:\Users\poona\.claude\bse_cash_project_work\bse_cash_project\Data\bse_cash_eod.db"
     )
 )
 
