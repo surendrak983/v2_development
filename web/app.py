@@ -4,18 +4,19 @@ from pathlib import Path
 from flask import Flask, render_template
 
 from dashboard.data_service import DashboardDataService
-from repository.symbol_repository import SymbolRepository
-from repository.company_repository import CompanyRepository
+from repository.stock_repository import StockRepository
 
 app = Flask(__name__)
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
+dashboard = DashboardDataService()
+
 
 @app.route("/")
 def home():
 
-    summary = DashboardDataService().get_summary()
+    summary = dashboard.get_summary()
 
     return render_template(
         "home.html",
@@ -26,7 +27,7 @@ def home():
 @app.route("/recent")
 def recent():
 
-    rows = DashboardDataService().get_recent_announcements()
+    rows = dashboard.get_recent_announcements()
 
     return render_template(
         "recent.html",
@@ -37,7 +38,7 @@ def recent():
 @app.route("/strong_buy")
 def strong_buy():
 
-    rows = DashboardDataService().get_strong_buy()
+    rows = dashboard.get_strong_buy()
 
     return render_template(
         "strong_buy.html",
@@ -48,21 +49,33 @@ def strong_buy():
 @app.route("/action_center")
 def action_center():
 
-    rows = DashboardDataService().get_action_center()
+    rows = dashboard.get_action_center()
 
     cards = []
 
     for row in rows:
 
-        scrip = str(row[2])
+        company_name = row[1]
 
-        symbol = SymbolRepository.get_symbol(
-            scrip
+        stock = StockRepository.get_stock(
+            company_name=company_name
         )
 
-        info = CompanyRepository.get_company_info(
-            scrip
-        )
+        symbol = ""
+        tradingview = ""
+        screener = ""
+
+        if stock:
+
+            symbol = stock.get("symbol", "")
+
+            tradingview = StockRepository.get_tradingview_url(
+                company_name
+            )
+
+            screener = StockRepository.get_screener_url(
+                company_name
+            )
 
         cards.append(
 
@@ -70,9 +83,9 @@ def action_center():
 
                 "time": row[0],
 
-                "company": row[1],
+                "company": company_name,
 
-                "scrip": scrip,
+                "scrip": row[2],
 
                 "headline": row[3],
 
@@ -88,11 +101,15 @@ def action_center():
 
                 "symbol": symbol,
 
-                "sector": info["sector"],
+                "sector": "",
 
-                "industry": info["industry"],
+                "industry": "",
 
-                "market_cap": info["market_cap"]
+                "market_cap": "",
+
+                "tradingview": tradingview,
+
+                "screener": screener
 
             }
 
@@ -105,8 +122,6 @@ def action_center():
         cards=cards
 
     )
-
-
 @app.route("/open_pdf/<path:filename>")
 def open_pdf(filename):
 
@@ -117,40 +132,39 @@ def open_pdf(filename):
         os.startfile(file_path)
 
         return """
+        <html>
+        <body>
+            <h3>PDF opened successfully.</h3>
 
-        <h2>
+            <script>
+                window.close();
+            </script>
 
-        PDF opened successfully.
-
-        </h2>
-
-        <script>
-
-        window.close();
-
-        </script>
-
+        </body>
+        </html>
         """
 
     return f"""
+    <html>
+    <body>
 
-    <h2>
+        <h3>PDF not found</h3>
 
-    PDF not found
+        <p>{file_path}</p>
 
-    </h2>
-
-    <p>
-
-    {file_path}
-
-    </p>
-
+    </body>
+    </html>
     """
 
 
 if __name__ == "__main__":
 
     app.run(
+
+        host="127.0.0.1",
+
+        port=5000,
+
         debug=True
+
     )

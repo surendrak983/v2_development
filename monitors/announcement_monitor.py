@@ -2,6 +2,10 @@ from repository.announcement_repository import (
     AnnouncementRepository
 )
 
+from repository.stock_repository import (
+    StockRepository
+)
+
 from services.analysis_service import (
     AnalysisService
 )
@@ -57,6 +61,22 @@ class AnnouncementMonitor:
             is_new = self.repo.save(row)
 
             if not is_new:
+                continue
+
+            # ----------------------------------------
+            # Liquidity Filter
+            # ----------------------------------------
+
+            if not StockRepository.is_tradeable(
+                scrip_code=item["scrip_code"],
+                company_name=item["company_name"]
+            ):
+
+                info(
+                    f"{item['company_name']} | "
+                    f"Skipped (Liquidity Filter)"
+                )
+
                 continue
 
             pdf_text = None

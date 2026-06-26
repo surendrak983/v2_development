@@ -1,62 +1,103 @@
-import pandas as pd
+"""
+repository.company_repository
+
+Loads company_master.csv into RAM.
+
+Provides fast lookup of:
+- Sector
+- Industry
+- Market Cap
+"""
+
 from pathlib import Path
+import pandas as pd
 from pandas.errors import EmptyDataError
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
 CSV_FILE = ROOT_DIR / "data" / "company_master.csv"
 
 
 class CompanyRepository:
 
-    _df = None
+    _loaded = False
+    _cache = {}
+
+    # ---------------------------------------------------------
 
     @classmethod
-    def _load(cls):
+    def load(cls):
 
-        if cls._df is not None:
+        if cls._loaded:
             return
+
+        cls._cache = {}
 
         try:
 
-            cls._df = pd.read_csv(
+            df = pd.read_csv(
                 CSV_FILE,
                 dtype=str
-            )
+            ).fillna("")
 
-        except (
+        except (FileNotFoundError, EmptyDataError):
 
-            FileNotFoundError,
+            print("[CompanyRepository] company_master.csv not found.")
 
-            EmptyDataError
+            cls._loaded = True
+            return
 
-        ):
+        for _, row in df.iterrows():
 
-            cls._df = pd.DataFrame(
-                columns=[
-                    "scrip_code",
-                    "symbol",
-                    "sector",
-                    "industry",
-                    "market_cap"
-                ]
-            )
+            code = str(
+                row.get("scrip_code", "")
+            ).strip()
+
+            if not code:
+                continue
+
+            cls._cache[code] = {
+
+                
+                "name":
+                    row.get("name", ""),
+                                
+                "sector":
+                    row.get("sector", ""),
+
+                "industry":
+                    row.get("industry", ""),
+
+                "market_cap":
+                    row.get("market_cap", "")
+            }
+
+        cls._loaded = True
+
+        print(
+            f"[CompanyRepository] Loaded {len(cls._cache)} companies."
+        )
+
+    # ---------------------------------------------------------
 
     @classmethod
-    def get_company_info(
-        cls,
-        scrip_code
-    ):
+    def reload(cls):
 
-        cls._load()
+        cls._loaded = False
+        cls.load()
 
-        row = cls._df.loc[
-            cls._df["scrip_code"] == str(scrip_code)
-        ]
+    # ---------------------------------------------------------
 
-        if row.empty:
+    @classmethod
+    def get_company_info(cls, scrip_code):
 
-            return {
+        cls.load()
+
+        return cls._cache.get(
+
+            str(scrip_code).strip(),
+
+            {
 
                 "sector": "",
 
@@ -66,14 +107,55 @@ class CompanyRepository:
 
             }
 
-        row = row.iloc[0]
+        )
 
-        return {
+    # ---------------------------------------------------------
 
-            "sector": row["sector"],
+    @classmethod
+    def get_sector(cls, scrip_code):
 
-            "industry": row["industry"],
+        return cls.get_company_info(
 
-            "market_cap": row["market_cap"]
+            scrip_code
 
-        }
+        )["sector"]
+
+    # ---------------------------------------------------------
+
+    @classmethod
+    def get_industry(cls, scrip_code):
+
+        return cls.get_company_info(
+
+            scrip_code
+
+        )["industry"]
+
+    # ---------------------------------------------------------
+
+    @classmethod
+    def get_market_cap(cls, scrip_code):
+
+        return cls.get_company_info(
+
+            scrip_code
+
+        )["market_cap"]
+
+    # ---------------------------------------------------------
+
+    @classmethod
+    def exists(cls, scrip_code):
+
+        cls.load()
+
+        return str(scrip_code).strip() in cls._cache
+
+    # ---------------------------------------------------------
+
+    @classmethod
+    def count(cls):
+
+        cls.load()
+
+        return len(cls._cache)

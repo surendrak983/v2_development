@@ -16,7 +16,11 @@ from monitors.announcement_monitor import (
 from core.config import (
     POLL_INTERVAL_SECONDS
 )
+from repository.stock_repository import StockRepository
+from repository.company_repository import CompanyRepository
 
+StockRepository.load()
+CompanyRepository.load()
 
 def startup():
 

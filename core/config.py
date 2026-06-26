@@ -23,6 +23,8 @@ REPORT_DIR.mkdir(exist_ok=True)
 # ----------------------------
 
 DB_PATH = DATA_DIR / "bse_monitor.db"
+COMBINED_STOCK_DB_PATH = DATA_DIR / "combined_stocks.db"
+
 
 MARKET_DATA_DB_PATH = (
     Path(

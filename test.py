@@ -1,11 +1,9 @@
-from services.attachment_service import (
-    AttachmentService
-)
+import pandas as pd
 
-svc = AttachmentService()
+df = pd.read_csv("data/company_master.csv")
 
-print(
-    svc.get_company_folder(
-        "500325"
-    )
-)
+print(df.shape)
+
+print(df.columns.tolist())
+
+print(df.head())
